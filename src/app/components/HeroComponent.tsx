@@ -4,8 +4,8 @@ import React from 'react';
 const HeroComponent = () => {
     return (
         <div className="flex flex-col items-left justify-center w-1/2 h-screen bg-white p-8">
-            <div>
-                <Image src="/symbit_logo.svg" alt="Symbit logo" width={150} height={37} />
+            <div className="absolute top-0 left-0 mt-6 ml-6">
+                <Image src="/symbit_logo_orange.svg" alt="Symbit logo" width={150} height={37} />
             </div>
             <div className="flex flex-col items-center justify-center p-16">
                 <div className="text-5xl font-bold my-12 text-lightBlack">

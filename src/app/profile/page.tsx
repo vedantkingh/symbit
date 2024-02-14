@@ -4,11 +4,15 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import DropDownMenu from "./DropDownMenu";
+import '@/app/profile/style.css'
 
 
 export default function ProfilePage() {
     const router = useRouter()
     const [data, setData] = useState("nothing")
+    const [openDropdown, setOpenDropdown] = useState(false)
     const logout = async () => {
         try {
             await axios.get('/api/users/logout')
@@ -27,14 +31,16 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="flex relative">
-            <div className="absolute top-0 right-0 mt-6 mr-6 bg-lightBlue p-6 shadow-lg rounded z-10">
-                {/* <ul>
-                    <li><a href="#">Menu Item 1</a></li>
-                    <li><a href="#">Menu Item 2</a></li>
-                    <li><a href="#">Menu Item 3</a></li>
-                </ul> */}
+        <div className="flex relative text-lg">
+            <div className="absolute top-0 left-0 mt-6 ml-6">
+                <Image src="/symbit_logo_blue.svg" alt="Symbit logo" width={150} height={37} />
             </div>
+            <div className="absolute top-0 right-0 mt-6 mr-6 bg-lightBlue px-3 py-5 rounded-lg z-10" onClick={() => setOpenDropdown(!openDropdown)}>
+                <div className={ openDropdown ? "activeHamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" : "hamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" }/>
+            </div>
+            {
+                openDropdown && <DropDownMenu/>
+            }
             <div className="w-1/2 h-screen bg-lightOrange">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
                     <label className="font-semibold text-darkBlue w-2/3">Recipient Organization E-mail:</label>
@@ -60,7 +66,7 @@ export default function ProfilePage() {
             </div>
             <div className="w-1/2 h-screen bg-darkOrange drop-shadow-xl">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
-                    <label className="font-semibold text-darkBlue mb-4">Generated Mail</label>
+                    <label className="font-semibold text-darkBlue mb-3">Generated Mail</label>
                     <textarea
                         className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
                         id="purpose_of_email"

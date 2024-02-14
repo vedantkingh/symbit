@@ -1,0 +1,70 @@
+.dropDown {
+    position: absolute;
+}
+
+.dropDown::before {
+    content: '';
+    position: absolute;
+    top: -0.2rem;
+    right: 1rem;
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(45deg);
+}
+
+.hamburger {
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(255, 101, 47, 0.2);
+    transition: all 0.5s ease-in-out;
+}
+
+.hamburger::before {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: translateY(-7px);
+}
+
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: translateY(7px);
+}
+
+.activeHamburger {
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    transform: translateX(-50px);
+    background: transparent;
+    transition: all 0.5s ease-in-out;
+}
+
+.activeHamburger::before {
+    content: '';
+    position: fixed;
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: rotate(45deg) translate(35px, -35px);
+}
+
+.activeHamburger::after {
+    content: '';
+    position: fixed;
+    width: 1.5rem;
+    height: .15rem;
+    border-radius: 5px;
+    transition: all 0.5s ease-in-out;
+    transform: rotate(-45deg) translate(35px, 35px);
+}
