@@ -30,12 +30,17 @@ export default function ProfilePage() {
         setData(res.data.data._id)
     }
 
+    const sendMail = async () => {
+        const response = await axios.post("/api/users/sendmail");
+        console.log(response.data);
+    }
+
     return (
         <div className="flex relative text-lg">
             <div className="absolute top-0 left-0 mt-6 ml-6">
                 <Image src="/symbit_logo_blue.svg" alt="Symbit logo" width={150} height={37} />
             </div>
-            <div className="absolute top-0 right-0 mt-6 mr-6 bg-lightBlue px-3 py-5 rounded-lg z-10" onClick={() => setOpenDropdown(!openDropdown)}>
+            <div className="absolute top-0 right-0 mt-6 mr-6 bg-lightBlue px-3 py-5 rounded-lg z-10 cursor-pointer" onClick={() => setOpenDropdown(!openDropdown)}>
                 <div className={ openDropdown ? "activeHamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" : "hamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" }/>
             </div>
             {
@@ -58,7 +63,7 @@ export default function ProfilePage() {
                     <label className="font-semibold text-darkBlue w-2/3">Custom Instructions:</label>
                     <textarea
                         className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
-                        id="purpose_of_email"
+                        id="custom_instructions"
                         rows={7}
                         placeholder="Add custom instructions.." />
                     <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Generate mail</button>
@@ -69,10 +74,9 @@ export default function ProfilePage() {
                     <label className="font-semibold text-darkBlue mb-3">Generated Mail</label>
                     <textarea
                         className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
-                        id="purpose_of_email"
-                        rows={14}
-                        placeholder="Add custom instructions.." />
-                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Send</button>
+                        id="generated_mail"
+                        rows={14} />
+                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>Send</button>
                 </div>
             </div>
         </div>
