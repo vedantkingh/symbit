@@ -62,7 +62,7 @@ export const sendEmail = async({email, emailType, userId}:any) => {
         console.log(emailInfo);
         const { subject, html } = emailInfo;
         const mailOptions = {
-            from: 'vedant@gmail.com',
+            from: process.env.EMAIL_ID,
             to: email,
             // subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
             // html: `<p>Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}
@@ -76,6 +76,35 @@ export const sendEmail = async({email, emailType, userId}:any) => {
         (mailOptions);
         return mailresponse;
 
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
+}
+
+export const sendGeneratedEmail = async({replyEmail, toEmail, subject,  message}:any) => {
+    try {
+        var transport = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            auth: {
+                user: process.env.EMAIL_ID,
+                pass: process.env.EMAIL_PASS
+            }
+            });
+        
+        const mailOptions = {
+            from: process.env.EMAIL_ID,
+            to: toEmail,
+            subject: subject,
+            html: `
+                <p>${message}</p>
+                <p style="font-style: italic;">This mail is sent via a mailing service, please reply directly to the sender by clicking the button below</p>
+                <a href="mailto:${replyEmail}?subject=${encodeURIComponent(subject)}" style="font-weight: bold; display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 10px;">Reply directly to the sender</a>                
+            `
+        }
+
+        const mailresponse = await transport.sendMail(mailOptions);
+        return mailresponse;
     } catch (error:any) {
         throw new Error(error.message);
     }

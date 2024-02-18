@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import HeroComponent from "../components/HeroComponent";
 
 
@@ -25,7 +25,7 @@ export default function LoginPage() {
             setLoading(true);
             const response = await axios.post("/api/users/login", user);
             console.log("Login success", response.data);
-            toast.success("Login success");
+            toast('Login success');
             router.push("/profile");
         } catch (error: any) {
             console.log("Login failed", error.message);

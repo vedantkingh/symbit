@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import HeroComponent from "../components/HeroComponent";
 
 
@@ -32,6 +32,7 @@ export default function SignupPage() {
             toast.error(error.message);
         } finally {
             setLoading(false);
+            toast.success("Signup Complete")
         }
     }
 
@@ -46,6 +47,7 @@ export default function SignupPage() {
 
     return (
         <div className="flex items-center justify-center">
+            <Toaster toastOptions={{ style: { background: "rgb(51 65 85)", color: "#fff" }, }} />
             <HeroComponent/>
             <div className="flex flex-col items-center justify-center w-1/2 h-screen py-2 bg-darkOrange drop-shadow-xl">
                 <h1 className="text-2xl font-bold text-darkBlue p-4">{loading ? "Processing" : "Signup"}</h1>

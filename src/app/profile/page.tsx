@@ -2,7 +2,7 @@
 import axios from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
-import { toast } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DropDownMenu from "./DropDownMenu";
@@ -13,6 +13,12 @@ export default function ProfilePage() {
     const router = useRouter()
     const [data, setData] = useState("nothing")
     const [openDropdown, setOpenDropdown] = useState(false)
+    const [recipientEmail, setRecipientEmail] = useState('');
+    const [purposeEmail, setPurposeEmail] = useState('');
+    const [instructionsEmail, setInstructionsEmail] = useState('');
+    const [generatedEmail, setGeneratedEmail] = useState('');
+    const [sendingMail, setSendingMail] = useState(false);
+
     const logout = async () => {
         try {
             await axios.get('/api/users/logout')
@@ -31,20 +37,48 @@ export default function ProfilePage() {
     }
 
     const sendMail = async () => {
-        const response = await axios.post("/api/users/sendmail");
-        console.log(response.data);
+        try {
+            setSendingMail(true);
+            const data = {
+                recipientEmail: recipientEmail,
+                purposeEmail: purposeEmail,
+                generatedEmail: generatedEmail,
+            };
+            const response = await axios.post("/api/users/sendmail", data);
+            console.log(response.data);
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+        } finally {
+            setSendingMail(false)
+            toast.success('Mail Sent Successfully')
+        }
+    }
+
+    const handleRecipientEmailChange = (event: any) => {
+        setRecipientEmail(event.target.value);
+    }
+    const handlePurposeEmailChange = (event: any) => {
+        setPurposeEmail(event.target.value);
+    }
+    const handleInstructionsEmailChange = (event: any) => {
+        setInstructionsEmail(event.target.value);
+    }
+    const handleGeneratedEmailChange = (event: any) => {
+        setGeneratedEmail(event.target.value);
     }
 
     return (
         <div className="flex relative text-lg">
+            <Toaster toastOptions={{ style: { background: "rgb(51 65 85)", color: "#fff" }, }} />
             <div className="absolute top-0 left-0 mt-6 ml-6">
                 <Image src="/symbit_logo_blue.svg" alt="Symbit logo" width={150} height={37} />
             </div>
             <div className="absolute top-0 right-0 mt-6 mr-6 bg-lightBlue px-3 py-5 rounded-lg z-10 cursor-pointer" onClick={() => setOpenDropdown(!openDropdown)}>
-                <div className={ openDropdown ? "activeHamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" : "hamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" }/>
+                <div className={openDropdown ? "activeHamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue" : "hamburger bg-darkBlue after:bg-darkBlue before:bg-darkBlue"} />
             </div>
             {
-                openDropdown && <DropDownMenu/>
+                openDropdown && <DropDownMenu />
             }
             <div className="w-1/2 h-screen bg-lightOrange">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
@@ -53,18 +87,24 @@ export default function ProfilePage() {
                         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
                         id="organization_email"
                         type="text"
+                        value={recipientEmail}
+                        onChange={handleRecipientEmailChange}
                         placeholder="Select recipient’s email address.." />
                     <label className="font-semibold text-darkBlue w-2/3">Purpose of E-mail:</label>
                     <input
                         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
                         id="purpose_of_email"
                         type="text"
+                        value={purposeEmail}
+                        onChange={handlePurposeEmailChange}
                         placeholder="Select your purpose.." />
                     <label className="font-semibold text-darkBlue w-2/3">Custom Instructions:</label>
                     <textarea
                         className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
                         id="custom_instructions"
                         rows={7}
+                        value={instructionsEmail}
+                        onChange={handleInstructionsEmailChange}
                         placeholder="Add custom instructions.." />
                     <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Generate mail</button>
                 </div>
@@ -75,8 +115,10 @@ export default function ProfilePage() {
                     <textarea
                         className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
                         id="generated_mail"
-                        rows={14} />
-                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>Send</button>
+                        rows={14}
+                        value={generatedEmail}
+                        onChange={handleGeneratedEmailChange} />
+                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>{sendingMail ? 'Sending' : 'Send'}</button>
                 </div>
             </div>
         </div>

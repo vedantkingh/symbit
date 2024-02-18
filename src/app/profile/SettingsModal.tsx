@@ -17,21 +17,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isVisible, onClose }) => 
                 {/* <button className="text-white text-xl place-self-end" onClick={onClose}>X</button> */}
                 <div className="flex flex-col items-center justify-center bg-white text-lightBlack p-5 rounded-lg">
                     <div className="font-semibold text-lg pb-4">Settings</div>
-                    <div className="flex gap-3 w-full">
-                        <div className="flex flex-col w-full">
-                            <label className="font-semibold text-sm">First Name:</label>
-                            <input
-                                className="p-2 text-sm border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-                                id="first_name"
-                                type="text" />
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label className="font-semibold text-sm">Last Name:</label>
-                            <input
-                                className="p-2 text-sm border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-                                id="last_name"
-                                type="text" />
-                        </div>
+                    <div className="flex flex-col w-full">
+                        <label className="font-semibold text-sm">Your Name:</label>
+                        <input
+                            className="p-2 text-sm border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+                            id="name"
+                            type="text" />
                     </div>
                     <div className='flex flex-col w-full'>
                         <label className="font-semibold text-sm">Your position in organization:</label>
@@ -47,22 +38,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isVisible, onClose }) => 
                             id="organization"
                             type="text" />
                     </div>
-                        <div className='flex flex-col w-full'>
-                            <label className="font-semibold text-sm">Your Email(in order to receive replies):</label>
-                            <input
-                                className="p-2 text-sm border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-full"
-                                id="reply_email"
-                                type="text" />
-                    <div className='flex w-full items-start justify-start'>
+                    <div className='flex flex-col w-full'>
+                        <label className="font-semibold text-sm">Your Email(in order to receive replies):</label>
                         <input
-                            className="form-checkbox h-4 w-4 text-gray-600 rounded"
-                            id="use_info"
-                            type="checkbox" />
-                        <span className="ml-2 text-sm">Use this information in my mail to greet the recipient</span>
-                    </div>
+                            className="p-2 text-sm border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-full"
+                            id="reply_email"
+                            type="text" />
+                        <div className='flex w-full items-start justify-start'>
+                            <input
+                                className="form-checkbox h-4 w-4 text-gray-600 rounded"
+                                id="use_info"
+                                type="checkbox" />
+                            <span className="ml-2 text-sm">Use this information in my mail to greet the recipient</span>
+                        </div>
                     </div>
                     <div className='flex w-full items-end justify-end'>
-                    <button className='text-sm font-bold py-2 px-4 mt-4 bg-green-500 rounded'>SAVE</button>
+                        <button className='text-sm font-bold py-2 px-4 mt-4 bg-green-500 rounded'>SAVE</button>
                     </div>
                 </div>
             </div>
