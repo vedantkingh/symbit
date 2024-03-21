@@ -25,11 +25,11 @@ export default function LoginPage() {
             setLoading(true);
             const response = await axios.post("/api/users/login", user);
             console.log("Login success", response.data);
-            toast('Login success');
+            toast('Logged in successfully');
             router.push("/profile");
         } catch (error: any) {
             console.log("Login failed", error.message);
-            toast.error(error.message);
+            toast.error("Login failed. Please Signup.");
         } finally {
             setLoading(false);
         }
@@ -45,6 +45,7 @@ export default function LoginPage() {
 
     return (
         <div className="flex items-center justify-center">
+            <Toaster toastOptions={{ style: { background: "rgb(51 65 85)", color: "#fff" }, }} />
             <HeroComponent/>
             <div className="flex flex-col items-center justify-center w-1/2 h-screen py-2 bg-darkOrange drop-shadow-xl">
                 <h1 className="text-2xl font-bold text-darkBlue p-4">{loading ? "Processing" : "Login"}</h1>

@@ -20,3 +20,13 @@ export async function GET(request:NextRequest){
     }
 
 }
+
+export async function POST(request:NextRequest){
+    try {
+        const reqBody = await request.json()
+        const {name, position, organization, replyEmail, useInfo} = reqBody
+        // const user 
+    } catch (error:any) {
+        return NextResponse.json({error: error.message}, {status: 400});
+    }
+}
