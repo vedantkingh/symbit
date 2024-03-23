@@ -13,10 +13,11 @@ const companySchema = new mongoose.Schema({
     about: String,
     website: String,
     industry: String,
+    companySize: String,
     headquarters: String,
     founded: String,
     type: String,
-    specialties: String, 
+    specialities: String, 
 })
 
 const Company = mongoose.models.Company || mongoose.model("companies", companySchema);

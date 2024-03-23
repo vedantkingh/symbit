@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DropDownMenu from "./DropDownMenu";
 import '@/app/profile/style.css'
+import { Input, Autocomplete, AutocompleteItem, Textarea, input} from "@nextui-org/react";
 
 
 export default function ProfilePage() {
@@ -82,27 +83,37 @@ export default function ProfilePage() {
             }
             <div className="w-1/2 h-screen bg-lightOrange">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
-                    <label className="font-semibold text-darkBlue w-2/3">Recipient Organization E-mail:</label>
-                    <input
+                    <Autocomplete className="w-2/3 pb-4" label='Select Company or Enter LinkedIn URL' allowsCustomValue={true}>
+                        <AutocompleteItem className="text-black" key='1'>hello </AutocompleteItem>
+                        <AutocompleteItem className="text-black" key='2'>lelo</AutocompleteItem>
+                    </Autocomplete>
+                    <Input className="w-2/3 pb-4" type="email" label="Recipient Organization Email" id="organization_email"
+                        value={recipientEmail}
+                        onChange={handleRecipientEmailChange} />
+                    {/* <label className="font-semibold text-darkBlue w-2/3">Recipient Organization E-mail:</label> */}
+                    {/* <input
                         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
                         id="organization_email"
                         type="text"
                         value={recipientEmail}
                         onChange={handleRecipientEmailChange}
-                        placeholder="Select recipient’s email address.." />
-                    <label className="font-semibold text-darkBlue w-2/3">Purpose of E-mail:</label>
+                        placeholder="Select recipient’s email address.." /> */}
+                    <Input className="w-2/3 pb-4" type="text" label="Purpose of Email" id="organization_email"
+                        value={purposeEmail}
+                        onChange={handlePurposeEmailChange} />
+                    {/* <label className="font-semibold text-darkBlue w-2/3">Purpose of E-mail:</label>
                     <input
                         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
                         id="purpose_of_email"
                         type="text"
                         value={purposeEmail}
                         onChange={handlePurposeEmailChange}
-                        placeholder="Select your purpose.." />
-                    <label className="font-semibold text-darkBlue w-2/3">Custom Instructions:</label>
-                    <textarea
-                        className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
+                        placeholder="Select your purpose.." /> */}
+                    {/* <label className="font-semibold text-darkBlue w-2/3">Custom Instructions:</label> */}
+                    <Textarea
+                        className="w-2/3 pb-4"
                         id="custom_instructions"
-                        rows={7}
+                        minRows={7}
                         value={instructionsEmail}
                         onChange={handleInstructionsEmailChange}
                         placeholder="Add custom instructions.." />
@@ -112,10 +123,13 @@ export default function ProfilePage() {
             <div className="w-1/2 h-screen bg-darkOrange drop-shadow-xl">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
                     <label className="font-semibold text-darkBlue mb-3">Generated Mail</label>
-                    <textarea
-                        className="p-2 border border-gray-300 rounded-lg mb-8 focus:outline-none focus:border-gray-600 text-black w-2/3 text-wrap"
+                    <Textarea
+                        className="w-2/3 pb-4"
+                        classNames={{
+                            input: "resize-y max-h-[75vh]",
+                        }}
                         id="generated_mail"
-                        rows={14}
+                        minRows={10}
                         value={generatedEmail}
                         onChange={handleGeneratedEmailChange} />
                     <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>{sendingMail ? 'Sending' : 'Send'}</button>
