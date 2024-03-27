@@ -5,19 +5,26 @@ const companySchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide the company name"],
     },
-    linkedInUrl: {
+    url: {
         type: String,
         required: [true, "Please provide a LinkedIn URL"],
         unique: true,
     },
-    about: String,
-    website: String,
-    industry: String,
+    about: {
+        type: String,
+        required: [true, "Please provide a description"],
+    },
+    avatarUrl: String,
     companySize: String,
     headquarters: String,
+    website: String,
+    industry: String,
     founded: String,
     type: String,
     specialities: String, 
+    emails: {
+        type: [String],
+    },
 })
 
 const Company = mongoose.models.Company || mongoose.model("companies", companySchema);

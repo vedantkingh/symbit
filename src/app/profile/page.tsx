@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DropDownMenu from "./DropDownMenu";
 import '@/app/profile/style.css'
-import { Input, Autocomplete, AutocompleteItem, Textarea, input} from "@nextui-org/react";
+import { Button, Input, Autocomplete, AutocompleteItem, Textarea, input} from "@nextui-org/react";
 
 
 export default function ProfilePage() {
@@ -19,6 +19,10 @@ export default function ProfilePage() {
     const [instructionsEmail, setInstructionsEmail] = useState('');
     const [generatedEmail, setGeneratedEmail] = useState('');
     const [sendingMail, setSendingMail] = useState(false);
+    const [companies, setCompanies] = useState([]);
+    const [linkedInUrl, setLinkedInUrl] = useState('');
+    const [inputMail, setInputMail] = useState('');
+    const [isCustomValue, setIsCustomValue] = useState(true);
 
     const logout = async () => {
         try {
@@ -56,6 +60,44 @@ export default function ProfilePage() {
         }
     }
 
+    const addCompany = async () => {
+        try {
+            const data = {
+                url: linkedInUrl,
+                email: inputMail,
+            }
+            const response = await axios.post("/api/companies/addcompany", data);
+            console.log(response.data);
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+        }
+    }
+
+    const getCompanies = async () => {
+        try {
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail);
+            if(isEmailValid){
+                const response = await axios.get('/api/companies/getcompany');
+                setCompanies(response.data);
+            } else {
+                toast('Invalid Email');
+            }
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+        }
+    }
+
+    // const handleSelectCompany = (value: any) => {
+    //     setLinkedInUrl(value);
+    //     setIsCustomValue(false);
+    // };
+    const handleUrlChange = (value: any) => {
+        setLinkedInUrl(value);
+        const isLinkedInUrl = /^https:\/\/www\.linkedin\.com\/company\//.test(value);
+        setIsCustomValue(!isLinkedInUrl);
+    }
     const handleRecipientEmailChange = (event: any) => {
         setRecipientEmail(event.target.value);
     }
@@ -83,76 +125,46 @@ export default function ProfilePage() {
             }
             <div className="w-1/2 h-screen bg-lightOrange">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
-                    <Autocomplete className="w-2/3 pb-4" label='Select Company or Enter LinkedIn URL' allowsCustomValue={true}>
+                    <Autocomplete className="w-5/6 pb-4" label='Select Company or Enter LinkedIn URL' allowsCustomValue={true} isRequired onInputChange={handleUrlChange}>
                         <AutocompleteItem className="text-black" key='1'>hello </AutocompleteItem>
                         <AutocompleteItem className="text-black" key='2'>lelo</AutocompleteItem>
                     </Autocomplete>
-                    <Input className="w-2/3 pb-4" type="email" label="Recipient Organization Email" id="organization_email"
-                        value={recipientEmail}
-                        onChange={handleRecipientEmailChange} />
-                    {/* <label className="font-semibold text-darkBlue w-2/3">Recipient Organization E-mail:</label> */}
-                    {/* <input
-                        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
-                        id="organization_email"
-                        type="text"
-                        value={recipientEmail}
-                        onChange={handleRecipientEmailChange}
-                        placeholder="Select recipient’s email address.." /> */}
-                    <Input className="w-2/3 pb-4" type="text" label="Purpose of Email" id="organization_email"
+                    <div className="flex w-5/6 pb-4 items-center">
+                        <Input className="" type="email" label="Recipient Organization Email" id="organization_email" isRequired
+                            value={recipientEmail}
+                            onChange={handleRecipientEmailChange} />
+                        <Button className="ml-4 max-h-max text-xs bg-lightBlue py-4 px-6 font-semibold text-darkBlue" size="lg" onClick={getCompanies} isDisabled={isCustomValue}>
+                            Get company details
+                        </Button>
+                    </div>
+                    <Input className="w-5/6 pb-4" type="text" label="Purpose of Email" id="organization_email" isRequired
                         value={purposeEmail}
                         onChange={handlePurposeEmailChange} />
-                    {/* <label className="font-semibold text-darkBlue w-2/3">Purpose of E-mail:</label>
-                    <input
-                        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black w-2/3"
-                        id="purpose_of_email"
-                        type="text"
-                        value={purposeEmail}
-                        onChange={handlePurposeEmailChange}
-                        placeholder="Select your purpose.." /> */}
-                    {/* <label className="font-semibold text-darkBlue w-2/3">Custom Instructions:</label> */}
                     <Textarea
-                        className="w-2/3 pb-4"
+                        className="w-5/6 pb-4"
                         id="custom_instructions"
                         minRows={7}
                         value={instructionsEmail}
                         onChange={handleInstructionsEmailChange}
                         placeholder="Add custom instructions.." />
-                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Generate mail</button>
+                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Generate mail</Button>
                 </div>
             </div>
             <div className="w-1/2 h-screen bg-darkOrange drop-shadow-xl">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
-                    <label className="font-semibold text-darkBlue mb-3">Generated Mail</label>
+                    <label className="font-semibold text-darkBlue text-base mb-3">Generated Mail</label>
                     <Textarea
-                        className="w-2/3 pb-4"
+                        className="w-5/6 pb-4"
                         classNames={{
-                            input: "resize-y max-h-[75vh]",
+                            input: "resize-y max-h-[75vh] min-h-[40vh]",
                         }}
                         id="generated_mail"
                         minRows={10}
                         value={generatedEmail}
                         onChange={handleGeneratedEmailChange} />
-                    <button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>{sendingMail ? 'Sending' : 'Send'}</button>
+                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>{sendingMail ? 'Sending' : 'Send'}</Button>
                 </div>
             </div>
         </div>
-
-        // <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        //     <h1>Profile</h1>
-        //     <hr />
-        //     <p>Profile page</p>
-        //     <h2 className="p-1 rounded bg-green-500">{data === 'nothing' ? "Nothing" : <Link href={`/profile/${data}`}>{data}
-        //     </Link>}</h2>
-        //     <hr />
-        //     <button
-        //         onClick={logout}
-        //         className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        //     >Logout</button>
-
-        //     <button
-        //         onClick={getUserDetails}
-        //         className="bg-green-800 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        //     >GetUser Details</button>
-        // </div>
     )
 }
