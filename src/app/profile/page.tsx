@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import DropDownMenu from "./DropDownMenu";
 import '@/app/profile/style.css'
-import { Button, Input, Autocomplete, AutocompleteItem, Textarea, input} from "@nextui-org/react";
+import { Button, Input, Autocomplete, AutocompleteItem, Textarea, input } from "@nextui-org/react";
+import { Company } from "../interfaces/Company";
 
 
 export default function ProfilePage() {
@@ -21,8 +22,10 @@ export default function ProfilePage() {
     const [sendingMail, setSendingMail] = useState(false);
     const [companies, setCompanies] = useState([]);
     const [linkedInUrl, setLinkedInUrl] = useState('');
-    const [inputMail, setInputMail] = useState('');
+    const [isFetchingCompany, setIsFetchingCompany] = useState(false);
     const [isCustomValue, setIsCustomValue] = useState(true);
+    const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+    const [isGeneratingMail, setIsGeneratingMail] = useState(false);
 
     const logout = async () => {
         try {
@@ -62,37 +65,57 @@ export default function ProfilePage() {
 
     const addCompany = async () => {
         try {
-            const data = {
-                url: linkedInUrl,
-                email: inputMail,
-            }
-            const response = await axios.post("/api/companies/addcompany", data);
-            console.log(response.data);
-        } catch (error: any) {
-            console.log(error.message);
-            toast.error(error.message)
-        }
-    }
-
-    const getCompanies = async () => {
-        try {
             const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail);
-            if(isEmailValid){
-                const response = await axios.get('/api/companies/getcompany');
-                setCompanies(response.data);
+            if (isEmailValid) {
+                setIsFetchingCompany(true);
+                const data = {
+                    url: linkedInUrl,
+                    email: recipientEmail,
+                }
+                const response = await axios.post("/api/companies/addcompany", data);
+                console.log(response.data);
+                toast.success('Company data extracted successfully');
             } else {
                 toast('Invalid Email');
             }
         } catch (error: any) {
             console.log(error.message);
             toast.error(error.message)
+        } finally {
+            setIsFetchingCompany(false);
         }
     }
 
-    // const handleSelectCompany = (value: any) => {
-    //     setLinkedInUrl(value);
-    //     setIsCustomValue(false);
-    // };
+    const getCompanies = async (isOpen: boolean) => {
+        try {
+            if (isOpen) {
+                const response = await axios.get('/api/companies/getcompany');
+                setCompanies(response.data.data);
+                console.log(response.data.data);
+            }
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+        }
+    }
+
+    const generateMail = async () => {
+        try {
+            setIsGeneratingMail(true);
+            const response = await axios.post('/api/users/generatemail');
+            console.log(response.data);
+            setGeneratedEmail(response.data.data);
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+        } finally {
+            setIsGeneratingMail(false);
+        }
+    }
+
+    const handleSelectCompany = (value: any) => {
+        setSelectedCompany(companies[value]);
+    };
     const handleUrlChange = (value: any) => {
         setLinkedInUrl(value);
         const isLinkedInUrl = /^https:\/\/www\.linkedin\.com\/company\//.test(value);
@@ -125,15 +148,34 @@ export default function ProfilePage() {
             }
             <div className="w-1/2 h-screen bg-lightOrange">
                 <div className="flex flex-col items-center justify-center h-screen p-10">
-                    <Autocomplete className="w-5/6 pb-4" label='Select Company or Enter LinkedIn URL' allowsCustomValue={true} isRequired onInputChange={handleUrlChange}>
-                        <AutocompleteItem className="text-black" key='1'>hello </AutocompleteItem>
-                        <AutocompleteItem className="text-black" key='2'>lelo</AutocompleteItem>
+                    <Autocomplete className="w-5/6 pb-4" label='Select Company or Enter LinkedIn URL' allowsCustomValue={true} isRequired onInputChange={handleUrlChange} onOpenChange={getCompanies} onSelectionChange={handleSelectCompany}>
+                        {companies.map((company: { companyName: string, url: string }, index: number) => (
+                            <AutocompleteItem key={index} className="text-black" value={company.companyName} textValue={company.companyName}>
+                                {/* {company.companyName} */}
+                                <div className="flex flex-col">
+                                    <span className="text-small">{company.companyName}</span>
+                                    <span className="text-tiny text-default-400">{company.url}</span>
+                                </div>
+                            </AutocompleteItem>
+                        ))}
                     </Autocomplete>
                     <div className="flex w-5/6 pb-4 items-center">
-                        <Input className="" type="email" label="Recipient Organization Email" id="organization_email" isRequired
+                        <Autocomplete className="" type="email" label="Recipient Organization Email" id="organization_email" isRequired allowsCustomValue={true}
                             value={recipientEmail}
-                            onChange={handleRecipientEmailChange} />
-                        <Button className="ml-4 max-h-max text-xs bg-lightBlue py-4 px-6 font-semibold text-darkBlue" size="lg" onClick={getCompanies} isDisabled={isCustomValue}>
+                            onChange={handleRecipientEmailChange}>
+                            {selectedCompany ? (
+                                selectedCompany.emails.map((email: string, index: number) => (
+                                    <AutocompleteItem key={index} className="text-black" value={email}>
+                                        {email}
+                                    </AutocompleteItem>
+                                ))
+                            ) : (
+                                <AutocompleteItem key="no-options" className="text-black" value="No Options" isReadOnly hideSelectedIcon shouldHighlightOnFocus={false}>
+                                    Select a company for suggestions
+                                </AutocompleteItem>
+                            )}
+                        </Autocomplete>
+                        <Button className="ml-4 max-h-max text-xs bg-lightBlue py-4 px-6 font-semibold text-darkBlue" onClick={addCompany} isDisabled={isCustomValue} isLoading={isFetchingCompany}>
                             Get company details
                         </Button>
                     </div>
@@ -147,7 +189,7 @@ export default function ProfilePage() {
                         value={instructionsEmail}
                         onChange={handleInstructionsEmailChange}
                         placeholder="Add custom instructions.." />
-                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg">Generate mail</Button>
+                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={generateMail} isLoading={isGeneratingMail}>Generate mail</Button>
                 </div>
             </div>
             <div className="w-1/2 h-screen bg-darkOrange drop-shadow-xl">
@@ -156,13 +198,13 @@ export default function ProfilePage() {
                     <Textarea
                         className="w-5/6 pb-4"
                         classNames={{
-                            input: "resize-y max-h-[75vh] min-h-[40vh]",
+                            input: "resize-y max-h-[75vh] min-h-[50vh]",
                         }}
                         id="generated_mail"
                         minRows={10}
                         value={generatedEmail}
                         onChange={handleGeneratedEmailChange} />
-                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail}>{sendingMail ? 'Sending' : 'Send'}</Button>
+                    <Button className="bg-lightBlue py-4 px-6 font-semibold text-darkBlue rounded-lg" onClick={sendMail} isLoading={sendingMail}>Send</Button>
                 </div>
             </div>
         </div>

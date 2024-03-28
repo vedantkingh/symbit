@@ -1,5 +1,4 @@
 import {connect} from "@/dbConfig/dbConfig";
-import User from "@/models/userModel";
 import Company from "@/models/companyModel"
 import { NextRequest, NextResponse } from "next/server";
 import axios from 'axios';
@@ -17,7 +16,7 @@ export async function POST(request: NextRequest){
             return NextResponse.json({ error: "Please provide an Email" }, { status: 400 });
         }
 
-        const response = await axios.post('https://cattle-awake-arguably.ngrok-free.app/scrape', { url });
+        const response = await axios.post('https://nightfox0.pythonanywhere.com/scrape-linkedin', { url });
         const scrapedData = response.data;
 
         if (!scrapedData) {

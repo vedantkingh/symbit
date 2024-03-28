@@ -1,7 +1,6 @@
-import { getDataFromToken } from "@/helpers/getDataFromToken";
+// import { getDataFromToken } from "@/helpers/getDataFromToken";
 
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/userModel";
 import Company from "@/models/companyModel"
 import { connect } from "@/dbConfig/dbConfig";
 
@@ -10,7 +9,7 @@ connect();
 export async function GET(request:NextRequest){
 
     try {
-        const userId = await getDataFromToken(request);
+        // const userId = await getDataFromToken(request);
         const companies = await Company.find({});
         return NextResponse.json({
             message: "Companies fetched",

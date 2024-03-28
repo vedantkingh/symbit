@@ -21,12 +21,12 @@ const companySchema = new mongoose.Schema({
     industry: String,
     founded: String,
     type: String,
-    specialities: String, 
+    specialties: String, 
     emails: {
         type: [String],
     },
 })
 
-const Company = mongoose.models.Company || mongoose.model("companies", companySchema);
+const Company = mongoose.models.companies || mongoose.model("companies", companySchema);
 
 export default Company;
